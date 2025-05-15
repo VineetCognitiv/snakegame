@@ -4,7 +4,7 @@ import { PlayArrow, Replay, Pause} from '@mui/icons-material';
 
 // Game constants
 const GRID_SIZE = 25;
-const CELL_SIZE = 20;
+const CELL_SIZE = 30;
 const INITIAL_SPEED = 150;
 const MAX_SPEED = 50;
 
@@ -54,10 +54,10 @@ const SnakeGame = () => {
 
   // Define FOOD_TYPES inside the component to make it available to hooks
   const FOOD_TYPES = useRef({
-    normal: { color: '#FF5722', score: 10, effect: null },
-    bonus: { color: '#FFEB3B', score: 30, effect: 'speedUp' },
-    super: { color: '#9C27B0', score: 50, effect: 'rainbow' },
-    slow: { color: '#2196F3', score: 20, effect: 'slowDown' }
+    normal: { color: '#FF5722', score: 10, effect: null },      // Orange
+    bonus: { color: '#FFEB3B', score: 30, effect: 'speedUp' },  // Yellow
+    super: { color: '#9C27B0', score: 50, effect: 'rainbow' },  // Purple
+    slow: { color: '#2196F3', score: 20, effect: 'slowDown' }   // Blue
   }).current;
 
   // Generate random food with different types
@@ -284,8 +284,8 @@ const SnakeGame = () => {
           ? `hsl(${(index * 10) % 360}, 80%, 60%)`
           : `hsl(${100 + (index * 2) % 60}, 70%, ${50 + (index % 20)}%)`,
       borderRadius: isHead 
-        ? (mouthOpen ? '50% 50% 60% 60% / 40% 40% 60% 60%' : '30%')
-        : isTail ? '20%' : '25%',
+        ? (mouthOpen ? '50% 50% 60% 60% / 40% 40% 60% 60%' : '50%')
+        : isTail ? '45%' : '50%',
       position: 'absolute',
       left: segment.x * CELL_SIZE,
       top: segment.y * CELL_SIZE,
@@ -293,6 +293,7 @@ const SnakeGame = () => {
       boxShadow: '0 0 5px rgba(0,0,0,0.3)',
       transition: 'all 0.1s ease',
       transform: isTail ? 'scale(0.9)' : 'scale(1)',
+    //  borderRadius: '50%',
       animation: theme === 'rainbow' ? `${rainbow} 2s linear infinite` : 'none'
     };
 
@@ -378,15 +379,34 @@ const SnakeGame = () => {
     ));
   };
 
+  // To make the snake body circular, change the borderRadius in renderSnakeSegment:
+  // Find this line inside renderSnakeSegment:
+  // borderRadius: isHead 
+  //   ? (mouthOpen ? '50% 50% 60% 60% / 40% 40% 60% 60%' : '30%')
+  //   : isTail ? '20%' : '25%',
+  // Change it to:
+  // borderRadius: '50%',
+
+  // The snake body is rendered here:
+  // {snake.map((segment, index) => renderSnakeSegment(segment, index))}
+  // This line maps over the snake array and renders each segment (including the head and tail).
+  // The renderSnakeSegment function handles the appearance of each segment.
+
+  // To make the snake body circular, change the borderRadius in renderSnakeSegment:
+  // Find this line inside renderSnakeSegment:
+  // borderRadius: isHead 
+  //   ? (mouthOpen ? '50% 50% 60% 60% / 40% 40% 60% 60%' : '30%')
+  //   : isTail ? '20%' : '25%',
+  // Change it to:
+  // borderRadius: '50%',
+
   return (
     <Box sx={{
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
-      justifyContent: 'center',
-      minHeight: '100vh',
       background: 'linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d)',
-      padding: 2,
+      padding: 0,
       overflow: 'hidden',
     }}>
       <Typography variant="h3" gutterBottom sx={{ 
@@ -450,6 +470,7 @@ const SnakeGame = () => {
           backgroundSize: `${CELL_SIZE}px ${CELL_SIZE}px`,
         }}>
           {renderFood()}
+          {/* Snake body is rendered below */}
           {snake.map((segment, index) => renderSnakeSegment(segment, index))}
           {renderParticles()}
 
